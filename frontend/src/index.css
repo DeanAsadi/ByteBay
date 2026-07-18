@@ -1,20 +1,32 @@
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  margin: 0;
+  background: #f5f5f5;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #f8f9fa;
-  color: #212529;
+}
+
+header {
+  background: #111827;
+  color: white;
+  padding: 20px;
+}
+
+header h1 {
+  text-align: center;
 }
 
 main {
   min-height: 80vh;
-  padding: 3rem 1rem;
-  text-align: center;
+  padding: 30px;
 }
 
-h1 {
-  margin-bottom: 1rem;
+footer {
+  background: #111827;
+  color: white;
+  text-align: center;
+  padding: 20px;
 }

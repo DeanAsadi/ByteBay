@@ -1,9 +1,18 @@
+import Header from './components/Header';
+import Footer from './components/Footer';
+import HomeScreen from './screens/HomeScreen';
+
 const App = () => {
   return (
-    <main>
-      <h1>Welcome to ByteBay</h1>
-      <p>Your destination for modern technology.</p>
-    </main>
+    <>
+      <Header />
+
+      <main>
+        <HomeScreen />
+      </main>
+
+      <Footer />
+    </>
   );
 };
 
