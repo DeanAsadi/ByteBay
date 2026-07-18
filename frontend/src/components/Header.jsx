@@ -1,7 +1,48 @@
+import {
+  Navbar,
+  Nav,
+  Container
+} from 'react-bootstrap';
+
+import {
+  FaShoppingCart,
+  FaUser
+} from 'react-icons/fa';
+
 const Header = () => {
   return (
     <header>
-      <h1>ByteBay</h1>
+      <Navbar bg="dark" variant="dark" expand="lg">
+        <Container>
+
+          <Navbar.Brand>
+            ByteBay
+          </Navbar.Brand>
+
+          <Navbar.Toggle />
+
+          <Navbar.Collapse>
+
+            <Nav className="ms-auto">
+
+              <Nav.Link>
+
+                <FaShoppingCart /> Cart
+
+              </Nav.Link>
+
+              <Nav.Link>
+
+                <FaUser /> Sign In
+
+              </Nav.Link>
+
+            </Nav>
+
+          </Navbar.Collapse>
+
+        </Container>
+      </Navbar>
     </header>
   );
 };

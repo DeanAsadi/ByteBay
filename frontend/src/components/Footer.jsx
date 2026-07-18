@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
-    <footer>
-      <p>Copyright &copy; ByteBay</p>
+    <footer className="text-center py-3">
+      Copyright © ByteBay
     </footer>
   );
 };
