@@ -1,0 +1,58 @@
+const products = [
+  {
+    id: 1,
+    name: 'Sony WH-1000XM4',
+    category: 'Headphones',
+    image: 'https://placehold.co/600x400?text=Sony+Headphones',
+    price: 349.99,
+    rating: 4.5,
+    numReviews: 128,
+  },
+  {
+    id: 2,
+    name: 'MacBook Pro M2',
+    category: 'Laptops',
+    image: 'https://placehold.co/600x400?text=MacBook+Pro',
+    price: 1299,
+    rating: 4.8,
+    numReviews: 96,
+  },
+  {
+    id: 3,
+    name: 'Apple Watch Series 8',
+    category: 'Smart Watches',
+    image: 'https://placehold.co/600x400?text=Apple+Watch',
+    price: 399,
+    rating: 4.6,
+    numReviews: 84,
+  },
+  {
+    id: 4,
+    name: 'Canon EOS 90D',
+    category: 'Cameras',
+    image: 'https://placehold.co/600x400?text=Canon+Camera',
+    price: 1099,
+    rating: 4.7,
+    numReviews: 67,
+  },
+  {
+    id: 5,
+    name: 'iPhone 14 Pro',
+    category: 'Phones',
+    image: 'https://placehold.co/600x400?text=iPhone+14+Pro',
+    price: 999,
+    rating: 4.9,
+    numReviews: 110,
+  },
+  {
+    id: 6,
+    name: 'PlayStation 5',
+    category: 'Gaming',
+    image: 'https://placehold.co/600x400?text=PlayStation+5',
+    price: 499,
+    rating: 4.8,
+    numReviews: 75,
+  },
+];
+
+export default products;
