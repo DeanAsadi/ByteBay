@@ -1,6 +1,7 @@
 import { Button, Card } from 'react-bootstrap';
 import { FaShoppingCart, FaStar } from 'react-icons/fa';
 import Rating from './Rating';
+import { Link } from 'react-router-dom';
 
 const Product = ({ product }) => {
   return (
@@ -15,8 +16,15 @@ const Product = ({ product }) => {
       <Card.Body className="d-flex flex-column">
         <small className="text-muted">{product.category}</small>
 
-        <Card.Title as="h3" className="product-title">
-          {product.name}
+        <Card.Title as="h3">
+
+          <Link
+            to={`/product/${product.id}`}
+            className="text-decoration-none"
+          >
+              {product.name}
+          </Link>
+
         </Card.Title>
 
         <Rating
