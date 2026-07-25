@@ -1,105 +1,88 @@
-import { useParams, useSearchParams } from 'react-router-dom';
-import products from '../data/products';
+import { useSelector } from 'react-redux';
 import {
   Row,
   Col,
   ListGroup,
   Image,
   Card,
+  Alert,
 } from 'react-bootstrap';
 
 const CartScreen = () => {
-  const { id } = useParams();
-  const [searchParams] = useSearchParams();
+  const cartItems = useSelector(
+    (state) => state.cart.cartItems
+  );
 
-  const qty = Number(searchParams.get('qty')) || 1;
-  const product = products.find(
-  (product) => product.id === Number(id)
-);
+  const subtotalItems = cartItems.reduce(
+    (total, item) => total + item.qty,
+    0
+  );
 
-if (!product) {
-  return <h2>Product Not Found</h2>;
-}
-    
+  const subtotalPrice = cartItems.reduce(
+    (total, item) => total + item.price * item.qty,
+    0
+  );
+
   return (
-  <>
-    <h1>Shopping Cart</h1>
+    <>
+      <h1>Shopping Cart</h1>
 
-    <Row>
+      <Row>
+        <Col md={8}>
+          {cartItems.length === 0 ? (
+            <Alert variant="info">
+              Your cart is empty.
+            </Alert>
+          ) : (
+            <ListGroup variant="flush">
+              {cartItems.map((item) => (
+                <ListGroup.Item key={item.id}>
+                  <Row className="align-items-center">
+                    <Col md={2}>
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fluid
+                        rounded
+                      />
+                    </Col>
 
-      <Col md={8}>
+                    <Col md={4}>
+                      {item.name}
+                    </Col>
 
-        <ListGroup variant="flush">
+                    <Col md={2}>
+                      ${item.price}
+                    </Col>
 
-          <ListGroup.Item>
+                    <Col md={2}>
+                      Qty: {item.qty}
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
+        </Col>
 
-            <Row>
+        <Col md={4}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h4>
+                  Subtotal ({subtotalItems} items)
+                </h4>
 
-              <Col md={2}>
-
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fluid
-                  rounded
-                />
-
-              </Col>
-
-              <Col md={4}>
-
-                {product.name}
-
-              </Col>
-
-              <Col md={2}>
-
-                ${product.price}
-
-              </Col>
-
-              <Col md={2}>
-
-                Qty: {qty}
-
-              </Col>
-
-            </Row>
-
-          </ListGroup.Item>
-
-        </ListGroup>
-
-      </Col>
-
-      <Col md={4}>
-
-        <Card>
-
-          <ListGroup variant="flush">
-
-            <ListGroup.Item>
-
-              <h4>
-
-                Subtotal
-
-              </h4>
-
-              ${product.price * qty}
-
-            </ListGroup.Item>
-
-          </ListGroup>
-
-        </Card>
-
-      </Col>
-
-    </Row>
-
-  </>
-);
+                <strong>
+                  ${subtotalPrice.toFixed(2)}
+                </strong>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+    </>
+  );
 };
 
-export default CartScreen; 
+export default CartScreen;
