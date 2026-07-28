@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Row,
   Col,
@@ -6,9 +6,15 @@ import {
   Image,
   Card,
   Alert,
+  Button,
 } from 'react-bootstrap';
+import { FaTrash } from 'react-icons/fa';
+
+import { removeFromCart } from '../slices/cartSlice';
 
 const CartScreen = () => {
+  const dispatch = useDispatch();
+
   const cartItems = useSelector(
     (state) => state.cart.cartItems
   );
@@ -22,6 +28,10 @@ const CartScreen = () => {
     (total, item) => total + item.price * item.qty,
     0
   );
+
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id));
+  };
 
   return (
     <>
@@ -47,7 +57,7 @@ const CartScreen = () => {
                       />
                     </Col>
 
-                    <Col md={4}>
+                    <Col md={3}>
                       {item.name}
                     </Col>
 
@@ -57,6 +67,19 @@ const CartScreen = () => {
 
                     <Col md={2}>
                       Qty: {item.qty}
+                    </Col>
+
+                    <Col md={2}>
+                      <Button
+                        type="button"
+                        variant="danger"
+                        size="sm"
+                        onClick={() =>
+                          removeFromCartHandler(item.id)
+                        }
+                      >
+                        <FaTrash />
+                      </Button>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -70,7 +93,8 @@ const CartScreen = () => {
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <h4>
-                  Subtotal ({subtotalItems} items)
+                  Subtotal ({subtotalItems}{' '}
+                  {subtotalItems === 1 ? 'item' : 'items'})
                 </h4>
 
                 <strong>
