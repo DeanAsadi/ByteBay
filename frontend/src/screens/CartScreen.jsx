@@ -7,10 +7,14 @@ import {
   Card,
   Alert,
   Button,
+  Form,
 } from 'react-bootstrap';
 import { FaTrash } from 'react-icons/fa';
 
-import { removeFromCart } from '../slices/cartSlice';
+import {
+  addToCart,
+  removeFromCart,
+} from '../slices/cartSlice';
 
 const CartScreen = () => {
   const dispatch = useDispatch();
@@ -28,6 +32,15 @@ const CartScreen = () => {
     (total, item) => total + item.price * item.qty,
     0
   );
+
+  const updateQuantityHandler = (item, newQuantity) => {
+    const updatedItem = {
+      ...item,
+      qty: newQuantity,
+    };
+
+    dispatch(addToCart(updatedItem));
+  };
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
@@ -66,7 +79,27 @@ const CartScreen = () => {
                     </Col>
 
                     <Col md={2}>
-                      Qty: {item.qty}
+                      <Form.Select
+                        value={item.qty}
+                        onChange={(event) =>
+                          updateQuantityHandler(
+                            item,
+                            Number(event.target.value)
+                          )
+                        }
+                      >
+                        {Array.from(
+                          { length: item.countInStock },
+                          (_, index) => index + 1
+                        ).map((quantity) => (
+                          <option
+                            key={quantity}
+                            value={quantity}
+                          >
+                            {quantity}
+                          </option>
+                        ))}
+                      </Form.Select>
                     </Col>
 
                     <Col md={2}>
