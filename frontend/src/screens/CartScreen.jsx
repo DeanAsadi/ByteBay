@@ -9,11 +9,15 @@ import {
   Button,
   Form,
 } from 'react-bootstrap';
-import { FaTrash } from 'react-icons/fa';
+import {
+  FaTrash,
+  FaTrashAlt,
+} from 'react-icons/fa';
 
 import {
   addToCart,
   removeFromCart,
+  clearCart,
 } from '../slices/cartSlice';
 
 const CartScreen = () => {
@@ -29,11 +33,15 @@ const CartScreen = () => {
   );
 
   const subtotalPrice = cartItems.reduce(
-    (total, item) => total + item.price * item.qty,
+    (total, item) =>
+      total + item.price * item.qty,
     0
   );
 
-  const updateQuantityHandler = (item, newQuantity) => {
+  const updateQuantityHandler = (
+    item,
+    newQuantity
+  ) => {
     const updatedItem = {
       ...item,
       qty: newQuantity,
@@ -46,9 +54,38 @@ const CartScreen = () => {
     dispatch(removeFromCart(id));
   };
 
+  const clearCartHandler = () => {
+    const userConfirmed = window.confirm(
+      'Are you sure you want to remove all items from your cart?'
+    );
+
+    if (userConfirmed) {
+      dispatch(clearCart());
+    }
+  };
+
   return (
     <>
-      <h1>Shopping Cart</h1>
+      <Row className="align-items-center mb-3">
+        <Col>
+          <h1 className="mb-0">
+            Shopping Cart
+          </h1>
+        </Col>
+
+        {cartItems.length > 0 && (
+          <Col xs="auto">
+            <Button
+              type="button"
+              variant="outline-danger"
+              onClick={clearCartHandler}
+            >
+              <FaTrashAlt className="me-2" />
+              Clear Cart
+            </Button>
+          </Col>
+        )}
+      </Row>
 
       <Row>
         <Col md={8}>
@@ -81,15 +118,21 @@ const CartScreen = () => {
                     <Col md={2}>
                       <Form.Select
                         value={item.qty}
+                        aria-label={`Quantity for ${item.name}`}
                         onChange={(event) =>
                           updateQuantityHandler(
                             item,
-                            Number(event.target.value)
+                            Number(
+                              event.target.value
+                            )
                           )
                         }
                       >
                         {Array.from(
-                          { length: item.countInStock },
+                          {
+                            length:
+                              item.countInStock,
+                          },
                           (_, index) => index + 1
                         ).map((quantity) => (
                           <option
@@ -107,8 +150,11 @@ const CartScreen = () => {
                         type="button"
                         variant="danger"
                         size="sm"
+                        aria-label={`Remove ${item.name} from cart`}
                         onClick={() =>
-                          removeFromCartHandler(item.id)
+                          removeFromCartHandler(
+                            item.id
+                          )
                         }
                       >
                         <FaTrash />
@@ -127,7 +173,10 @@ const CartScreen = () => {
               <ListGroup.Item>
                 <h4>
                   Subtotal ({subtotalItems}{' '}
-                  {subtotalItems === 1 ? 'item' : 'items'})
+                  {subtotalItems === 1
+                    ? 'item'
+                    : 'items'}
+                  )
                 </h4>
 
                 <strong>
