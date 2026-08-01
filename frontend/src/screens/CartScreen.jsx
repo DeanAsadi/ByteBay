@@ -1,3 +1,4 @@
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Row,
@@ -22,6 +23,7 @@ import {
 
 const CartScreen = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const cartItems = useSelector(
     (state) => state.cart.cartItems
@@ -64,6 +66,10 @@ const CartScreen = () => {
     }
   };
 
+  const checkoutHandler = () => {
+    navigate('/login?redirect=/shipping');
+  };
+
   return (
     <>
       <Row className="align-items-center mb-3">
@@ -91,7 +97,11 @@ const CartScreen = () => {
         <Col md={8}>
           {cartItems.length === 0 ? (
             <Alert variant="info">
-              Your cart is empty.
+              Your cart is empty.{' '}
+
+              <Link to="/">
+                Continue Shopping
+              </Link>
             </Alert>
           ) : (
             <ListGroup variant="flush">
@@ -108,7 +118,12 @@ const CartScreen = () => {
                     </Col>
 
                     <Col md={3}>
-                      {item.name}
+                      <Link
+                        to={`/product/${item.id}`}
+                        className="text-decoration-none"
+                      >
+                        {item.name}
+                      </Link>
                     </Col>
 
                     <Col md={2}>
@@ -182,6 +197,17 @@ const CartScreen = () => {
                 <strong>
                   ${subtotalPrice.toFixed(2)}
                 </strong>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Button
+                  type="button"
+                  className="w-100"
+                  disabled={cartItems.length === 0}
+                  onClick={checkoutHandler}
+                >
+                  Proceed To Checkout
+                </Button>
               </ListGroup.Item>
             </ListGroup>
           </Card>
