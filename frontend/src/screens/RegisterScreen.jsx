@@ -13,24 +13,38 @@ import {
 
 import FormContainer from '../components/FormContainer';
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
   const [searchParams] = useSearchParams();
 
   const redirect =
     searchParams.get('redirect') || '/';
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] =
+    useState('');
+  const [confirmPassword, setConfirmPassword] =
     useState('');
   const [message, setMessage] = useState('');
 
   const submitHandler = (event) => {
     event.preventDefault();
 
-    if (!email || !password) {
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !confirmPassword
+    ) {
       setMessage(
-        'Please enter both your email and password.'
+        'Please complete all required fields.'
       );
+
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setMessage('Passwords do not match.');
 
       return;
     }
@@ -38,6 +52,7 @@ const LoginScreen = () => {
     setMessage('');
 
     console.log({
+      name,
       email,
       password,
       redirect,
@@ -46,7 +61,7 @@ const LoginScreen = () => {
 
   return (
     <FormContainer>
-      <h1>Sign In</h1>
+      <h1>Create Account</h1>
 
       {message && (
         <Alert variant="danger">
@@ -55,6 +70,22 @@ const LoginScreen = () => {
       )}
 
       <Form onSubmit={submitHandler}>
+        <Form.Group
+          controlId="name"
+          className="my-3"
+        >
+          <Form.Label>Name</Form.Label>
+
+          <Form.Control
+            type="text"
+            placeholder="Enter your name"
+            value={name}
+            onChange={(event) =>
+              setName(event.target.value)
+            }
+          />
+        </Form.Group>
+
         <Form.Group
           controlId="email"
           className="my-3"
@@ -89,27 +120,47 @@ const LoginScreen = () => {
           />
         </Form.Group>
 
+        <Form.Group
+          controlId="confirmPassword"
+          className="my-3"
+        >
+          <Form.Label>
+            Confirm Password
+          </Form.Label>
+
+          <Form.Control
+            type="password"
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onChange={(event) =>
+              setConfirmPassword(
+                event.target.value
+              )
+            }
+          />
+        </Form.Group>
+
         <Button
           type="submit"
           variant="primary"
           className="mt-2"
         >
-          Sign In
+          Register
         </Button>
       </Form>
 
       <Row className="py-3">
         <Col>
-          New customer?{' '}
+          Already have an account?{' '}
 
           <Link
             to={
               redirect !== '/'
-                ? `/register?redirect=${redirect}`
-                : '/register'
+                ? `/login?redirect=${redirect}`
+                : '/login'
             }
           >
-            Register
+            Sign In
           </Link>
         </Col>
       </Row>
@@ -117,4 +168,4 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;
