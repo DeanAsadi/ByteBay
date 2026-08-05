@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 
-import products from './data/products.js';
+import productRoutes from './routes/productRoutes.js';
 
 dotenv.config();
 
@@ -23,26 +23,7 @@ app.get('/api/health', (request, response) => {
   });
 });
 
-app.get('/api/products', (request, response) => {
-  response.status(200).json(products);
-});
-
-app.get('/api/products/:id', (request, response) => {
-  const productId = Number(request.params.id);
-
-  const product = products.find(
-    (product) => product.id === productId
-  );
-
-  if (!product) {
-    return response.status(404).json({
-      success: false,
-      message: 'Product not found',
-    });
-  }
-
-  return response.status(200).json(product);
-});
+app.use('/api/products', productRoutes);
 
 app.listen(PORT, () => {
   console.log(
