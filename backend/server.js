@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 
+import products from './data/products.js';
+
 dotenv.config();
 
 const app = express();
@@ -19,6 +21,27 @@ app.get('/api/health', (request, response) => {
     message: 'ByteBay API is running',
     environment: process.env.NODE_ENV,
   });
+});
+
+app.get('/api/products', (request, response) => {
+  response.status(200).json(products);
+});
+
+app.get('/api/products/:id', (request, response) => {
+  const productId = Number(request.params.id);
+
+  const product = products.find(
+    (product) => product.id === productId
+  );
+
+  if (!product) {
+    return response.status(404).json({
+      success: false,
+      message: 'Product not found',
+    });
+  }
+
+  return response.status(200).json(product);
 });
 
 app.listen(PORT, () => {
