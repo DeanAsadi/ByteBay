@@ -1,7 +1,13 @@
-import { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import {
+  useEffect,
+  useState,
+} from 'react';
+import {
+  useParams,
+  Link,
+  useNavigate,
+} from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
 import {
   Row,
   Col,
@@ -9,33 +15,59 @@ import {
   ListGroup,
   Card,
   Button,
-  Alert,
   Form,
 } from 'react-bootstrap';
 
-import products from '../data/products';
 import Rating from '../components/Rating';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
 import { addToCart } from '../slices/cartSlice';
 
 const ProductScreen = () => {
   const { id } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const product = products.find(
-    (product) => product.id === Number(id)
-  );
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        setError('');
 
-  if (!product) {
-    return (
-      <Alert variant="warning" className="text-center mt-5">
-        <h4>Product Not Found</h4>
-        <p>Please check the URL or return to the homepage.</p>
-      </Alert>
-    );
-  }
+        const response = await fetch(
+          `/api/products/${id}`
+        );
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error(
+              'Product not found.'
+            );
+          }
+
+          throw new Error(
+            'Failed to load the product.'
+          );
+        }
+
+        const data = await response.json();
+
+        setProduct(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   const addToCartHandler = () => {
     const cartItem = {
@@ -48,9 +80,32 @@ const ProductScreen = () => {
     navigate('/cart');
   };
 
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return (
+      <Message variant="danger">
+        {error}
+      </Message>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Message variant="warning">
+        Product not found.
+      </Message>
+    );
+  }
+
   return (
     <>
-      <Link className="btn btn-light my-3" to="/">
+      <Link
+        className="btn btn-light my-3"
+        to="/"
+      >
         Go Back
       </Link>
 
@@ -94,7 +149,9 @@ const ProductScreen = () => {
                   <Col>Price:</Col>
 
                   <Col>
-                    <strong>${product.price}</strong>
+                    <strong>
+                      ${product.price}
+                    </strong>
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -120,15 +177,25 @@ const ProductScreen = () => {
                       <Form.Select
                         value={qty}
                         onChange={(event) =>
-                          setQty(Number(event.target.value))
+                          setQty(
+                            Number(
+                              event.target.value
+                            )
+                          )
                         }
                       >
                         {Array.from(
-                          { length: product.countInStock },
+                          {
+                            length:
+                              product.countInStock,
+                          },
                           (_, index) => index + 1
-                        ).map((number) => (
-                          <option key={number} value={number}>
-                            {number}
+                        ).map((quantity) => (
+                          <option
+                            key={quantity}
+                            value={quantity}
+                          >
+                            {quantity}
                           </option>
                         ))}
                       </Form.Select>
@@ -139,9 +206,11 @@ const ProductScreen = () => {
 
               <ListGroup.Item>
                 <Button
-                  className="w-100"
                   type="button"
-                  disabled={product.countInStock === 0}
+                  className="w-100"
+                  disabled={
+                    product.countInStock === 0
+                  }
                   onClick={addToCartHandler}
                 >
                   Add To Cart
