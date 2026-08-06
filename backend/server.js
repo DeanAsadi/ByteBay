@@ -1,37 +1,43 @@
-const notFound = (request, response, next) => {
-  const error = new Error(
-    `Not Found - ${request.originalUrl}`
-  );
+import express from 'express';
+import dotenv from 'dotenv';
 
-  response.status(404);
+import connectDB from './config/db.js';
+import productRoutes from './routes/productRoutes.js';
 
-  next(error);
-};
-
-const errorHandler = (
-  error,
-  request,
-  response,
-  next
-) => {
-  const statusCode =
-    response.statusCode === 200
-      ? 500
-      : response.statusCode;
-
-  response.status(statusCode);
-
-  response.json({
-    message: error.message,
-
-    stack:
-      process.env.NODE_ENV === 'production'
-        ? null
-        : error.stack,
-  });
-};
-
-export {
+import {
   notFound,
   errorHandler,
-};
+} from './middleware/errorMiddleware.js';
+
+dotenv.config();
+
+connectDB();
+
+const app = express();
+
+const PORT = process.env.PORT || 5000;
+
+app.use(express.json());
+
+app.get('/', (request, response) => {
+  response.send('ByteBay API is running');
+});
+
+app.get('/api/health', (request, response) => {
+  response.status(200).json({
+    success: true,
+    message: 'ByteBay API is running',
+    environment: process.env.NODE_ENV,
+  });
+});
+
+app.use('/api/products', productRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+  console.log(
+    `ByteBay server is running on port ${PORT}`
+  );
+});
