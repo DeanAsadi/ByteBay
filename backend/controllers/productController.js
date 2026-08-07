@@ -1,24 +1,35 @@
-import products from '../data/products.js';
+import Product from '../models/productModel.js';
 
-const getProducts = (request, response) => {
-  response.status(200).json(products);
+const getProducts = async (request, response, next) => {
+  try {
+    const products = await Product.find({});
+
+    response.status(200).json(products);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getProductById = (request, response) => {
-  const productId = Number(request.params.id);
+const getProductById = async (
+  request,
+  response,
+  next
+) => {
+  try {
+    const product = await Product.findById(
+      request.params.id
+    );
 
-  const product = products.find(
-    (product) => product.id === productId
-  );
+    if (!product) {
+      response.status(404);
 
-  if (!product) {
-    return response.status(404).json({
-      success: false,
-      message: 'Product not found',
-    });
+      throw new Error('Product not found');
+    }
+
+    response.status(200).json(product);
+  } catch (error) {
+    next(error);
   }
-
-  return response.status(200).json(product);
 };
 
 export {
