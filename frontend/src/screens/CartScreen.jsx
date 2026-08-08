@@ -1,5 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  Link,
+  useNavigate,
+} from 'react-router-dom';
+import {
+  useDispatch,
+  useSelector,
+} from 'react-redux';
 import {
   Row,
   Col,
@@ -98,7 +104,6 @@ const CartScreen = () => {
           {cartItems.length === 0 ? (
             <Alert variant="info">
               Your cart is empty.{' '}
-
               <Link to="/">
                 Continue Shopping
               </Link>
@@ -106,7 +111,9 @@ const CartScreen = () => {
           ) : (
             <ListGroup variant="flush">
               {cartItems.map((item) => (
-                <ListGroup.Item key={item.id}>
+                <ListGroup.Item
+                  key={item._id}
+                >
                   <Row className="align-items-center">
                     <Col md={2}>
                       <Image
@@ -119,7 +126,7 @@ const CartScreen = () => {
 
                     <Col md={3}>
                       <Link
-                        to={`/product/${item.id}`}
+                        to={`/product/${item._id}`}
                         className="text-decoration-none"
                       >
                         {item.name}
@@ -133,7 +140,6 @@ const CartScreen = () => {
                     <Col md={2}>
                       <Form.Select
                         value={item.qty}
-                        aria-label={`Quantity for ${item.name}`}
                         onChange={(event) =>
                           updateQuantityHandler(
                             item,
@@ -148,7 +154,8 @@ const CartScreen = () => {
                             length:
                               item.countInStock,
                           },
-                          (_, index) => index + 1
+                          (_, index) =>
+                            index + 1
                         ).map((quantity) => (
                           <option
                             key={quantity}
@@ -165,10 +172,9 @@ const CartScreen = () => {
                         type="button"
                         variant="danger"
                         size="sm"
-                        aria-label={`Remove ${item.name} from cart`}
                         onClick={() =>
                           removeFromCartHandler(
-                            item.id
+                            item._id
                           )
                         }
                       >
@@ -203,7 +209,9 @@ const CartScreen = () => {
                 <Button
                   type="button"
                   className="w-100"
-                  disabled={cartItems.length === 0}
+                  disabled={
+                    cartItems.length === 0
+                  }
                   onClick={checkoutHandler}
                 >
                   Proceed To Checkout
